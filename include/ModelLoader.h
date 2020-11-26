@@ -69,7 +69,7 @@ public:
 				}
 				if (line.substr(0, line.find(' ')) == "f") {
 					line.erase(0, 1);
-					
+
 					std::vector<std::string> ls = split(line, '/');
 					int vertex_index = atoi(ls[0].c_str());
 					int texture_index = atoi(ls[1].c_str());
@@ -81,7 +81,7 @@ public:
 
 					m.textures.push_back(textures[texture_index - 1].x);
 					m.textures.push_back(textures[texture_index - 1].y);
-					
+
 					m.normals.push_back(normals[normal_index - 1].x);
 					m.normals.push_back(normals[normal_index - 1].y);
 					m.normals.push_back(normals[normal_index - 1].z);
@@ -106,21 +106,16 @@ public:
 			int size = getInt(file);
 
 			for (int i = 0; i < size; i++) {
+				for (int j = 0; j < 3; j++) {
+					m.normals.push_back(getFloat(file));
+				}
 				for (int j = 0; j < 9; j++) {
-					float f = getFloat(file);
-					m.vertices.push_back(f);
+					m.vertices.push_back(getFloat(file));
 				}
-			}
-			for (int i = 0; i < size; i++) {
-				for (int j = 0; j < 3; j++) {
-					m.normals.push_back(getFloat(file));
-				}
-				for (int j = 0; j < 3; j++) {
-					m.normals.push_back(getFloat(file));
-				}
-				for (int j = 0; j < 3; j++) {
-					m.normals.push_back(getFloat(file));
-				}
+
+				
+
+				getShort(file);
 			}
 #ifdef MODELLOADER_VERBOSE
 			std::cout << header;
@@ -131,7 +126,7 @@ public:
 		catch (std::ifstream::failure ex) {
 			assert("File not found");
 		}
-		
+
 		return m;
 	}
 private:
@@ -149,7 +144,14 @@ private:
 
 		return i;
 	}
-	inline static std::string readHeader(std::ifstream &stream)
+	inline static short getShort(std::ifstream& stream)
+	{
+		short i;
+		stream.read((char*)&i, 2);
+
+		return i;
+	}
+	inline static std::string readHeader(std::ifstream& stream)
 	{
 		char* head = new char[80];
 		stream.read(head, 80);
